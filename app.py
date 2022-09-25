@@ -3,15 +3,19 @@ import os
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.filedialog import askopenfilename
+import customtkinter as ctk
 import fusee_launcher as fusee
 import mock_arguments
 
+# ctk colors
+ctk.set_appearance_mode("System") # set theme according to system theme
+ctk.set_default_color_theme("blue") # set default color theme (blue, dark-blue, green)
 
-
-class App(tk.Frame):
+class App(ctk.CTk):
 
     def __init__(self, master=None):
-        tk.Frame.__init__(self, master)
+        ctk.CTk.__init__(self, master)
+        self.title('Fusée Gelée GUI')
         self.grid()
         self.build_widgets()
 
@@ -29,44 +33,45 @@ class App(tk.Frame):
 
 
     def build_widgets(self):
-        style = ttk.Style()
-        style.configure('Horizontal.TProgressbar', background='#5eba21')
-        self.progress = ttk.Progressbar(self, mode='indeterminate', maximum=50)
-        self.progress.grid(row=0, columnspan=2, sticky=tk.W+tk.E)
-        self.progress.start(30)
 
-        self.lbl_look = ttk.Label(self, text="Looking for Device...")
+        self.progress = ctk.CTkProgressBar(self, mode='indeterminate', height=12)
+        self.progress.grid(row=0, columnspan=2, sticky=tk.W+tk.E, pady=12, padx=12)
+        self.progress.start()
+
+        self.lbl_look = ctk.CTkLabel(self, text="Looking for Device...")
         self.lbl_look.grid(row=1, column=0, columnspan=2, pady=8)
 
-        self.btn_open = ttk.Button(self, text="Select Payload", command=self.btn_open_pressed)
+        self.btn_open = ctk.CTkButton(self, text="Select Payload", command=self.btn_open_pressed, corner_radius=12, fg_color="#d9d9d9", hover_color="#b5b5b5")
         self.btn_open.grid(row=2, column=0, padx=8)
 
-        self.lbl_file = ttk.Label(self, text="No Payload Selected.    ", justify=tk.LEFT)
+        # last-payload
+        self.btn_last_payload = ctk.CTkButton(self, text="Load last used payload", command=self.load_last_payload, corner_radius=12, fg_color="#d9d9d9", hover_color="#b5b5b5")
+        self.btn_last_payload.grid(row=3, column=0, padx=8, pady=8)
+
+        self.lbl_file = ctk.CTkLabel(self, text="No Payload Selected.    ", justify=tk.LEFT)
         self.lbl_file.grid(row=2, column=1, padx=8)
 
-        self.btn_send = ttk.Button(self, text="Send Payload!", command=self.btn_send_pressed)
-        self.btn_send.grid(row=3, column=0, columnspan=2, sticky=tk.W+tk.E, pady=8, padx=8)
-        self.btn_send.state(('disabled',)) # trailing comma to define single element tuple
-
-        self.btn_mountusb = ttk.Button(self, text="Mount SD on PC", command=self.btn_mountusb_pressed)
-        self.btn_mountusb.grid(row=4, column=0, columnspan=2, sticky=tk.W+tk.E, pady=8, padx=8)
-        self.btn_mountusb.state(('disabled',)) # trailing comma to define single element tuple
+        self.btn_send = ctk.CTkButton(self, text="Send Payload", command=self.btn_send_pressed, corner_radius=12, fg_color="#d9d9d9", hover_color="#b5b5b5", state="disabled")
+        self.btn_send.grid(row=4, column=0, columnspan=2, sticky=tk.W+tk.E, pady=8, padx=8)
+        
 
 
     def do_update(self):
         device = self.usb_backend.find_device(0x0955, 0x7321)
         if device and not self.device_found:
             self.device_found = True
-            self.lbl_look.configure(text='Device found!')
+            self.lbl_look.configure(text='Device ready')
             self.progress.stop()
-            self.progress.configure(mode='determinate', maximum=1000)
-            self.progress.step(999)
+            self.progress.grid_remove()
+            self.progress.configure(mode='determinate')
+            #self.progress.step(999)
 
         elif not device and self.device_found:
             self.device_found = False
+            self.progress.grid()
             self.lbl_look.configure(text='Looking for device...')
-            self.progress.configure(mode='indeterminate', maximum=50)
-            self.progress.start(30)
+            self.progress.configure(mode='indeterminate')
+            self.progress.start()
 
         self.validate_form()
         self.after(333, self.do_update)
@@ -80,7 +85,28 @@ class App(tk.Frame):
             self.payload_path = path
             self.lbl_file.configure(text='..'+path[max(0, excess):])
 
+            # save payload for later
+            with open('last_payload', 'w') as file:
+                file.write(path)
+
+            # log payload for debugging
+            print(path)
+
         self.validate_form()
+    
+    def load_last_payload(self):
+        with open('last_payload') as file:
+            savepath = file.readlines()
+            path = savepath[0]
+
+            # log payload path for debugging
+            print(path)
+            print(savepath)
+
+        excess = len(path)-self.lbl_length
+        self.payload_path = path
+        self.lbl_file.configure(text='..'+path[max(0, excess):])
+
 
 
 
@@ -90,23 +116,11 @@ class App(tk.Frame):
         args.relocator = self.build_relocator_path()
         fusee.do_hax(args)
 
-
-    def btn_mountusb_pressed(self):
-        args = mock_arguments.MockArguments()
-        args.payload   = self.build_mountusb_path()
-        args.relocator = self.build_relocator_path()
-        fusee.do_hax(args)
-
-
     def validate_form(self):
         if self.payload_path and self.device_found:
-            self.btn_send.state(('!disabled',))
-            self.btn_mountusb.state(('!disabled',))
-        elif self.device_found:
-            self.btn_mountusb.state(('!disabled',))
+            self.btn_send.configure(state="enabled")
         else:
-            self.btn_send.state(('disabled',))
-            self.btn_mountusb.state(('disabled',))
+            self.btn_send.configure(state="disabled")
 
 
     def build_mountusb_path(self):
@@ -125,6 +139,7 @@ class App(tk.Frame):
 
         return os.path.join(path, 'intermezzo.bin')
 
+
+
 my_app = App()
-my_app.master.title('Payload Injector')
 my_app.mainloop()
