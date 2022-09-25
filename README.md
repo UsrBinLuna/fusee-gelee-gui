@@ -21,7 +21,7 @@ A mod of the [Nintendo Homebrew Server's](https://github.com/nh-server/fusee-int
 * Get required modules via `pip install -r requirements.txt`
 * Run `app.py`
 
-## Using Fusée Launcher Interfacée
+## Using Fusée-Gelée GUI
 The app is very simple, it should be very intuitive to use:
 
 * Click the `Select Payload` button to browse your files and select the desired payload.
