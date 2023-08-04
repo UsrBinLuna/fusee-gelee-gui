@@ -1,2 +1,2 @@
-customtkinter==4.6.3
-darkdetect==0.7.1
+customtkinter>=4.6.3
+darkdetect>=0.7.1
