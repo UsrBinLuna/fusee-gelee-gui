@@ -1,5 +1,5 @@
 
-# Fusée-Gelée GUI v2.0.0
+# Fusée-Gelée GUI
 A mod of the [Nintendo Homebrew Server's](https://github.com/nh-server/fusee-interfacee-tk) Fusée-Interfacée with a more modern UI. 
 
 ## Differences from NH-Server's fusée-interfacée-tk
