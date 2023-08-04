@@ -11,11 +11,13 @@ import mock_arguments
 ctk.set_appearance_mode("System") # set theme (System, Light, Dark)
 ctk.set_default_color_theme("blue") # set default color theme (blue, dark-blue, green)
 
+
 class App(ctk.CTk):
 
     def __init__(self, master=None):
         ctk.CTk.__init__(self, master)
         self.title('Fusée Gelée GUI')
+        self.iconbitmap('icon.ico')
         self.grid()
         self.geometry("330x200")
         self.build_widgets()
