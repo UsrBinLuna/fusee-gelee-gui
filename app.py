@@ -84,7 +84,7 @@ class App(ctk.CTk):
         if path:
             excess = len(path)-self.lbl_length
             self.payload_path = path
-            self.lbl_file.configure(text='..'+path[max(0, excess):])
+            self.lbl_file.configure(text='..'+path[max(0, excess):], text_color='black')
 
             # save payload for later
             with open('last_payload', 'w') as file:
@@ -96,17 +96,23 @@ class App(ctk.CTk):
         self.validate_form()
     
     def load_last_payload(self):
-        with open('last_payload') as file:
-            savepath = file.readlines()
-            path = savepath[0]
+        
+        if os.path.exists('last_payload'):
+            with open('last_payload') as file:
+                savepath = file.readlines()
+                path = savepath[0]
+                
+                # log payload path for debugging
+                print(path)
+                print(savepath)
+                excess = len(path)-self.lbl_length
+                self.payload_path = path
+                self.lbl_file.configure(text='..'+path[max(0, excess):], text_color='black')
+        else:
+            self.lbl_file.configure(text='File not found!', text_color='red')
 
-            # log payload path for debugging
-            print(path)
-            print(savepath)
 
-        excess = len(path)-self.lbl_length
-        self.payload_path = path
-        self.lbl_file.configure(text='..'+path[max(0, excess):])
+        
 
 
 
