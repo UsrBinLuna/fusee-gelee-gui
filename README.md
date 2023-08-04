@@ -17,6 +17,7 @@ A mod of the [Nintendo Homebrew Server's](https://github.com/nh-server/fusee-int
 ### Requirements
 * Have latest [python 3](https://www.python.org/downloads/) and [pyusb](https://github.com/pyusb/pyusb) installed.
 * __On Linux__ have libusb1 installed (you probably already have).
+* __On Windows__ have libusbK installed. [Get it here](https://sourceforge.net/projects/libusbk/files/libusbK-release/)
 * Clone this repo
 * Get required modules via `pip install -r requirements.txt`
 * Run `app.py`
