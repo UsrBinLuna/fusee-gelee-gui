@@ -1,7 +1,5 @@
 import sys
 import os
-import tkinter as tk
-import tkinter.ttk as ttk
 from tkinter.filedialog import askopenfilename
 import customtkinter as ctk
 import fusee_launcher as fusee
@@ -38,7 +36,7 @@ class App(ctk.CTk):
     def build_widgets(self):
 
         self.progress = ctk.CTkProgressBar(self, mode='indeterminate', height=12)
-        self.progress.grid(row=0, columnspan=2, sticky=tk.W+tk.E, pady=12, padx=12)
+        self.progress.grid(row=0, columnspan=2, sticky=ctk.W+ctk.E, pady=12, padx=12)
         self.progress.start()
 
         self.lbl_look = ctk.CTkLabel(self, text="Looking for Device...")
@@ -51,11 +49,11 @@ class App(ctk.CTk):
         self.btn_last_payload = ctk.CTkButton(self, text="Load last used payload", command=self.load_last_payload, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"))
         self.btn_last_payload.grid(row=3, column=0, padx=8, pady=8)
 
-        self.lbl_file = ctk.CTkLabel(self, text="No Payload Selected.    ", justify=tk.LEFT)
+        self.lbl_file = ctk.CTkLabel(self, text="No Payload Selected.    ", justify=ctk.LEFT)
         self.lbl_file.grid(row=2, column=1, padx=8)
 
         self.btn_send = ctk.CTkButton(self, text="Send Payload", command=self.btn_send_pressed, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"), state="disabled")
-        self.btn_send.grid(row=4, column=0, columnspan=2, sticky=tk.W+tk.E, pady=8, padx=8)
+        self.btn_send.grid(row=4, column=0, columnspan=2, sticky=ctk.W+ctk.E, pady=8, padx=8)
         
 
 
