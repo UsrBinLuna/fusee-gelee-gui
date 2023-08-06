@@ -1,6 +1,5 @@
 import sys
 import os
-from tkinter.filedialog import askopenfilename
 import customtkinter as ctk
 import fusee_launcher as fusee
 import mock_arguments
@@ -46,7 +45,7 @@ class App(ctk.CTk):
         self.btn_open.grid(row=2, column=0, padx=8)
 
         # last-payload
-        self.btn_last_payload = ctk.CTkButton(self, text="Load last used payload", command=self.load_last_payload, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"))
+        self.btn_last_payload = ctk.CTkButton(self, text="Load Last Used Payload", command=self.load_last_payload, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"))
         self.btn_last_payload.grid(row=3, column=0, padx=8, pady=8)
 
         self.lbl_file = ctk.CTkLabel(self, text="No Payload Selected.    ", justify=ctk.LEFT)
@@ -80,7 +79,7 @@ class App(ctk.CTk):
 
 
     def btn_open_pressed(self):
-        path = askopenfilename(filetypes=[('Binary', '*.bin')], title='Select Payload')
+        path = ctk.filedialog.askopenfilename(filetypes=[('Binary', '*.bin')], title='Select Payload')
         if path:
             excess = len(path)-self.lbl_length
             self.payload_path = path
