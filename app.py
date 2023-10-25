@@ -43,13 +43,13 @@ class App(ctk.CTk):
 
         # contents
         self.btn_open = ctk.CTkButton(self.tabview.tab("Payload"), text="Select Payload", command=self.btn_open_pressed, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"))
-        self.btn_open.grid(row=1, column=0, padx=8)
+        self.btn_open.grid(row=1, column=0)
         # last-payload
         self.btn_last_payload = ctk.CTkButton(self.tabview.tab("Payload"), text="Load Last Used Payload", command=self.load_last_payload, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"))
-        self.btn_last_payload.grid(row=2, column=0, padx=8, pady=8)
+        self.btn_last_payload.grid(row=2, column=0, pady=8)
 
         self.lbl_file = ctk.CTkLabel(self.tabview.tab("Payload"), text="No Payload Selected.    ", justify=ctk.LEFT)
-        self.lbl_file.grid(row=1, column=1, padx=8)
+        self.lbl_file.grid(row=1, column=1, padx=40)
 
         self.btn_send = ctk.CTkButton(self.tabview.tab("Payload"), text="Send Payload", command=self.btn_send_pressed, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"), state="disabled")
         self.btn_send.grid(row=3, column=0, columnspan=2, sticky=ctk.W+ctk.E, pady=8, padx=8)
