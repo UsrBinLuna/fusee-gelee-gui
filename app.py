@@ -3,9 +3,10 @@ import os
 import customtkinter as ctk
 import fusee_launcher as fusee
 import mock_arguments
+from PIL import ImageTk
 
 # ctk colors
-ctk.set_appearance_mode("System") # set theme (System, Light, Dark)
+ctk.set_appearance_mode("Dark") # set theme (System, Light, Dark)
 ctk.set_default_color_theme("blue") # set default color theme (blue, dark-blue, green)
 
 
@@ -14,10 +15,11 @@ class App(ctk.CTk):
     def __init__(self, master=None):
         ctk.CTk.__init__(self, master)
         self.title('Fusée Gelée GUI')
-        self.iconbitmap('icon.ico')
+        self.iconpath = ImageTk.PhotoImage(file=os.path.join("icon.png"))
+        self.wm_iconbitmap()
+        self.iconphoto(False, self.iconpath)
         self.grid()
-        self.geometry("330x200")
-        self.build_widgets()
+        self.geometry("490x450")
 
         self.payload_path = ''
         self.device_found = False
@@ -28,31 +30,41 @@ class App(ctk.CTk):
         root.update()
         root.resizable(0, 0)
 
-        self.do_update()
+        # create tabview
+        self.tabview = ctk.CTkTabview(self, width=250)
+        self.tabview.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.tabview.add("Payload")
+        self.tabview.add("Coming Soon")
+        self.tabview.tab("Payload").grid_columnconfigure(0, weight=1)
 
+        # separate frames
+        self.device_frame = ctk.CTkFrame(self)
+        self.device_frame.grid(row=1, column=2 , padx=(20, 0), pady=(20, 0), sticky="nsew")
 
+        # contents
+        self.btn_open = ctk.CTkButton(self.tabview.tab("Payload"), text="Select Payload", command=self.btn_open_pressed, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"))
+        self.btn_open.grid(row=1, column=0, padx=8)
+        # last-payload
+        self.btn_last_payload = ctk.CTkButton(self.tabview.tab("Payload"), text="Load Last Used Payload", command=self.load_last_payload, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"))
+        self.btn_last_payload.grid(row=2, column=0, padx=8, pady=8)
 
-    def build_widgets(self):
+        self.lbl_file = ctk.CTkLabel(self.tabview.tab("Payload"), text="No Payload Selected.    ", justify=ctk.LEFT)
+        self.lbl_file.grid(row=1, column=1, padx=8)
 
-        self.progress = ctk.CTkProgressBar(self, mode='indeterminate', height=12)
-        self.progress.grid(row=0, columnspan=2, sticky=ctk.W+ctk.E, pady=12, padx=12)
+        self.btn_send = ctk.CTkButton(self.tabview.tab("Payload"), text="Send Payload", command=self.btn_send_pressed, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"), state="disabled")
+        self.btn_send.grid(row=3, column=0, columnspan=2, sticky=ctk.W+ctk.E, pady=8, padx=8)
+
+        self.progress = ctk.CTkProgressBar(self.device_frame, mode='indeterminate', height=12)
+        self.progress.grid(row=1, columnspan=2, sticky=ctk.W+ctk.E, padx=125, pady=25)
         self.progress.start()
 
-        self.lbl_look = ctk.CTkLabel(self, text="Looking for Device...")
-        self.lbl_look.grid(row=1, column=0, columnspan=2, pady=8)
+        self.lbl_look = ctk.CTkLabel(self.device_frame, text="Looking for Device...")
+        self.lbl_look.grid(row=2, column=0, columnspan=2)
 
-        self.btn_open = ctk.CTkButton(self, text="Select Payload", command=self.btn_open_pressed, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"))
-        self.btn_open.grid(row=2, column=0, padx=8)
+        self.lbl_empty = ctk.CTkLabel(self.device_frame, text="")
+        self.lbl_empty.grid(row=3, column=0, columnspan=2)
 
-        # last-payload
-        self.btn_last_payload = ctk.CTkButton(self, text="Load Last Used Payload", command=self.load_last_payload, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"))
-        self.btn_last_payload.grid(row=3, column=0, padx=8, pady=8)
-
-        self.lbl_file = ctk.CTkLabel(self, text="No Payload Selected.    ", justify=ctk.LEFT)
-        self.lbl_file.grid(row=2, column=1, padx=8)
-
-        self.btn_send = ctk.CTkButton(self, text="Send Payload", command=self.btn_send_pressed, corner_radius=12, fg_color=("#d9d9d9", "#454545"), hover_color=("#b5b5b5", "#4f4f4f"), state="disabled")
-        self.btn_send.grid(row=4, column=0, columnspan=2, sticky=ctk.W+ctk.E, pady=8, padx=8)
+        self.do_update()
         
 
 
